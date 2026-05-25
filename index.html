@@ -279,7 +279,7 @@
     .program-card {
       border-radius: 4px; overflow: hidden;
     }
-    .prog-photo { height: 200px; }
+    .prog-photo { aspect-ratio: 4/3; }
     .prog-caption {
       padding: 16px 18px; background: #FAF6F2;
       font-size: 15px; color: #5C5754; line-height: 1.7;
@@ -1288,6 +1288,7 @@
     };
 
     function EvidenceSection() {
+      const mob = useMobile();
       const core = [
         {
           img: '084c659323886.jpg',
@@ -1324,7 +1325,7 @@
             </div>
 
             {/* 핵심 카드 3개 */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 32 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : 'repeat(3, 1fr)', gap: 20, marginBottom: 32 }}>
               {core.map((c, i) => (
                 <div key={i} style={{
                   background: '#fff', border: '1px solid #E8E2DA',
@@ -1946,6 +1947,7 @@
 
     /* ══ 대표 블로그/칼럼 ══ */
     function BlogSection() {
+      const mob = useMobile();
       const posts = [
         {
           title: '"결정은 했는데.. 왜 마음이 더 불편해질까요?"',
@@ -1981,7 +1983,7 @@
             </div>
 
             {/* 카드 3개 */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 44 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : 'repeat(3, 1fr)', gap: 20, marginBottom: 44 }}>
               {posts.map((p, i) => (
                 <a
                   key={i}
