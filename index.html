@@ -678,15 +678,25 @@
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     };
 
+    function useMobile(bp = 700) {
+      const [mob, setMob] = useState(typeof window !== 'undefined' && window.innerWidth <= bp);
+      useEffect(() => {
+        const h = () => setMob(window.innerWidth <= bp);
+        window.addEventListener('resize', h, { passive: true });
+        return () => window.removeEventListener('resize', h);
+      }, [bp]);
+      return mob;
+    }
+
     /* ══ HEADER ══ */
     function Header({ solid }) {
       const [open, setOpen] = useState(false);
       const tc = solid ? '#1A1A1A' : '#fff';
       const links = [
-        { l: 'VIP 소개', id: 'about' },
+        { l: '요양원 소개', id: 'about' },
         { l: '돌봄 시스템', id: 'care' },
         { l: '보호자 소통', id: 'comm' },
-        { l: '입소 안내', id: 'admission' },
+        { l: '시설 안내', id: 'admission' },
       ];
       return (
         <>
@@ -741,7 +751,7 @@
           <div className="hero-bg" />
 
           <div className="hero-wrap"><div className="hero-content">
-            <div className="hero-label">경기도 의정부 · VIP 요양원</div>
+            <div className="hero-label">VIP 요양원</div>
             <h1 className="hero-h1">
               요양원은<br />
               <em>시설 사진만 보고</em><br />
@@ -890,7 +900,7 @@
           n: '01', t: '보호자 카카오톡 소통',
           sub: '어르신의 컨디션, 생활 변화, 프로그램 참여 내용을 보호자와 공유합니다.',
           d: '사진 몇 장을 보내는 것이 아니라\n부모님의 하루가 어떻게 지나갔는지\n확인할 수 있도록 돕습니다.',
-          img: '카톡내용1.jpg',
+          img: '카톡내용/SE-3861b84e-c94c-480f-8015-441d2cb0874c.jpg',
           imgStyle: {},
         },
         {
@@ -904,7 +914,7 @@
           n: '03', t: '사진·영상 기록',
           sub: '프로그램과 활동 장면을 사진과 영상으로 남깁니다.',
           d: '어르신이 어떻게 참여하고,\n어떤 표정과 반응을 보이는지\n보호자가 확인할 수 있게 합니다.',
-          img: '대표사진.jpg',
+          img: '활동사진/84.jpg',
           imgStyle: {},
         },
         {
@@ -1032,13 +1042,16 @@
               </p>
             </div>
 
-            {/* 사진 그리드 — 추후 실제 프로그램 사진으로 교체 */}
+            {/* 사진 그리드 */}
             <div className="program-grid" style={{ marginTop: 48, marginBottom: 16 }}>
-              {['색칠 · 인지 활동', '음악 · 노래 활동', '체조 · 신체 활동'].map((l, i) => (
+              {[
+                { l: '색칠 · 인지 활동', img: '활동사진/8.jpg' },
+                { l: '음악 · 노래 활동', img: '활동사진/28.jpg' },
+                { l: '체조 · 신체 활동', img: '활동사진/77.jpg' },
+              ].map(({ l, img }, i) => (
                 <div key={i} className="program-card">
-                  <div className="photo-placeholder prog-photo">
-                    <div className="ph-label" style={{ fontSize: 12 }}>{l}</div>
-                    <div className="ph-label" style={{ fontSize: 11, opacity: 0.6 }}>사진 교체 예정</div>
+                  <div className="prog-photo" style={{ overflow: 'hidden' }}>
+                    <img src={img} alt={l} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   </div>
                   <div className="prog-caption"><strong>{l}</strong></div>
                 </div>
@@ -1073,8 +1086,13 @@
 
     /* ══ SEC 5 — 보호자 소통 ══ */
     function CommSection() {
-      const imgs = ['카톡내용1.jpg', '카톡내용2.jpg', '카톡내용3.jpg'];
+      const imgs = [
+        '카톡내용/SE-63542a00-1900-40bf-bf7e-f41a2ead1a5e.jpg',
+        '카톡내용/SE-6e24656a-696d-4b4e-8481-9f7483431fab.jpg',
+        '카톡내용/SE-a80a862f-a6ab-4201-a870-53902874ec8c.jpg',
+      ];
       const [cur, setCur] = useState(0);
+      const mob = useMobile();
       useEffect(() => {
         const t = setInterval(() => setCur(c => (c + 1) % imgs.length), 5000);
         return () => clearInterval(t);
@@ -1105,9 +1123,6 @@
                   보호자가 자주 방문하지 못해도<br />
                   부모님의 하루를 놓치지 않도록 돕습니다.
                 </p>
-                <button className="btn-gold" onClick={() => go('consult')}>
-                  보호자 소통 방식 확인하기
-                </button>
               </div>
 
               {/* 오른쪽 — 카카오톡 슬라이드쇼 */}
@@ -1140,7 +1155,7 @@
                 <button
                   onClick={prev}
                   style={{
-                    position: 'absolute', left: -20, top: '50%', transform: 'translateY(-50%)',
+                    position: 'absolute', left: mob ? 8 : -20, top: '50%', transform: 'translateY(-50%)',
                     width: 40, height: 40, borderRadius: '50%',
                     background: '#fff', border: '1px solid #E8E2DA',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
@@ -1151,7 +1166,7 @@
                 <button
                   onClick={next}
                   style={{
-                    position: 'absolute', right: -20, top: '50%', transform: 'translateY(-50%)',
+                    position: 'absolute', right: mob ? 8 : -20, top: '50%', transform: 'translateY(-50%)',
                     width: 40, height: 40, borderRadius: '50%',
                     background: '#b68c6d', border: 'none',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
@@ -1280,12 +1295,12 @@
           d: '식사, 수분 섭취, 컨디션, 활동 참여처럼 매일 확인해야 할 항목을 기준으로 관리합니다.',
         },
         {
-          img: '카톡내용1.jpg',
+          img: '카톡내용/SE-aadf2311-5f74-4bff-8816-c18e50bc36d2.jpg',
           t: '보호자 소통 예시',
           d: '어르신의 하루가 어떻게 지나갔는지 보호자가 확인할 수 있도록 공유합니다.',
         },
         {
-          img: '대표사진.jpg',
+          img: '회의사진/SE-d0d1e6c4-2e74-4ba2-9cc9-8a454662b5f1.jpg',
           t: '낙상·욕창 예방 기준',
           d: '사고가 생긴 뒤 대응하는 것이 아니라 매일 예방 기준을 확인합니다.',
         },
@@ -1399,9 +1414,8 @@
                 </p>
               </div>
               <div className="col-r">
-                <div className="photo-placeholder" style={{ height: 340 }}>
-                  <div className="ph-icon">🌅</div>
-                  <div className="ph-label">어르신 생활 공간 사진으로 교체 예정</div>
+                <div style={{ height: 340, borderRadius: 8, overflow: 'hidden' }}>
+                  <img src="활동사진/84.jpg" alt="어르신 활동 모습" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </div>
               </div>
             </div>
@@ -1422,9 +1436,17 @@
         { t: '응급상황 대응 매뉴얼',          v: 'v1.0', date: '2025.11.08' },
         { t: '신입 입소자 적응 돌봄 기준',    v: 'v1.0', date: '2025.10.15' },
       ];
-      const slides = ['084c659323886.jpg', '대표사진.jpg', '카톡내용1.jpg'];
+      const slides = [
+        '활동사진/8.jpg',
+        '회의사진/SE-ddb13bfa-5219-43df-b037-ae66cfe8b8f9.jpg',
+        '활동사진/28.jpg',
+        '회의사진/SE-ad537e9d-bcf7-46c7-b269-75c40c4e290b.jpg',
+        '회의사진/SE-ef6cefe4-e635-44dd-b879-fcffdddfced5.jpg',
+        '카톡내용/SE-fd1c92ea-e1c1-4e45-ad98-a0ded4dcf1a1.jpg',
+      ];
       const [active, setActive] = useState(0);
       const [timerKey, setTimerKey] = useState(0);
+      const mob = useMobile();
       const manualGo = (i) => { setActive(i); setTimerKey(k => k + 1); };
       useEffect(() => {
         const t = setInterval(() => setActive(a => (a + 1) % 6), 5000);
@@ -1460,7 +1482,7 @@
             <div style={{ background: '#1A1510', borderRadius: 8, overflow: 'hidden', marginBottom: 48 }}>
               {/* 헤더 */}
               <div style={{
-                padding: '14px 32px',
+                padding: mob ? '12px 16px' : '14px 32px',
                 borderBottom: '1px solid rgba(255,255,255,0.08)',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               }}>
@@ -1470,7 +1492,7 @@
                     VIP CARE STANDARD — 업데이트 이력
                   </span>
                 </div>
-                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)' }}>마우스 올리면 정지</span>
+                {!mob && <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)' }}>마우스 올리면 정지</span>}
               </div>
               {/* 스크롤 영역 */}
               <div style={{ height: 336, overflow: 'hidden', position: 'relative' }}>
@@ -1482,7 +1504,7 @@
                   {[...manuals, ...manuals].map((m, i) => (
                     <div key={i} style={{
                       display: 'flex', alignItems: 'center',
-                      padding: '16px 32px',
+                      padding: mob ? '12px 16px' : '16px 32px',
                       borderBottom: '1px solid rgba(255,255,255,0.05)',
                     }}>
                       <div style={{ width: 100, flexShrink: 0, fontSize: 12, color: 'rgba(255,255,255,0.32)', letterSpacing: '0.02em' }}>
@@ -1513,10 +1535,10 @@
 
               {/* 슬라이드 카드 */}
               <div style={{ background: '#1A1510', borderRadius: 8, overflow: 'hidden', position: 'relative' }}>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', flexDirection: mob ? 'column' : 'row' }}>
 
-                  {/* 왼쪽 — 이미지 */}
-                  <div style={{ width: '42%', flexShrink: 0, position: 'relative', minHeight: 320 }}>
+                  {/* 이미지 */}
+                  <div style={{ width: mob ? '100%' : '42%', flexShrink: 0, position: 'relative', minHeight: mob ? 220 : 320 }}>
                     {checks.map((_, i) => (
                       <img
                         key={i}
@@ -1532,8 +1554,8 @@
                     ))}
                   </div>
 
-                  {/* 오른쪽 — 체크리스트 (현재 항목 강조) */}
-                  <div style={{ flex: 1, padding: '36px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  {/* 체크리스트 */}
+                  <div style={{ flex: 1, padding: mob ? '20px 16px' : '36px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     {checks.map((c, i) => (
                       <div
                         key={i}
@@ -1568,7 +1590,7 @@
 
                 {/* 하단 내비게이션 */}
                 <div style={{
-                  padding: '16px 40px',
+                  padding: mob ? '12px 16px' : '16px 40px',
                   borderTop: '1px solid rgba(255,255,255,0.08)',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 }}>
@@ -1617,8 +1639,8 @@
           </div>{/* /wrap */}
 
           {/* ④ 전자책 CTA — 풀 너비 */}
-          <div id="guide" style={{ background: '#b68c6d', padding: '88px 0', marginTop: 56 }}>
-            <div className="wrap" style={{ display: 'flex', alignItems: 'center', gap: 80, flexWrap: 'wrap' }}>
+          <div id="guide" style={{ background: '#b68c6d', padding: mob ? '56px 0' : '88px 0', marginTop: 56 }}>
+            <div className="wrap" style={{ display: 'flex', alignItems: 'center', gap: mob ? 32 : 80, flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: 280 }}>
                 <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 17, fontWeight: 500, marginBottom: 16, letterSpacing: '0.02em' }}>
                   이 모든 업데이트와 자료가 전자책에 담겨 있습니다
@@ -1649,64 +1671,7 @@
                 <img
                   src="전자책사진.png"
                   alt="우리 부모님, 어디서 지내셔야 할까요?"
-                  style={{ height: 340, display: 'block', filter: 'drop-shadow(0 20px 56px rgba(0,0,0,0.32))' }}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    /* ══ SEC 9 — 가이드 CTA ══ */
-    function GuideCta() {
-      return (
-        <section id="guide" style={{ background: '#b68c6d', padding: '88px 0' }}>
-          <div className="wrap">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 60, flexWrap: 'wrap' }}>
-              {/* 텍스트 */}
-              <div style={{ flex: '1', minWidth: 280 }}>
-                <h2 style={{
-                  color: '#fff', fontWeight: 900, lineHeight: 1.25,
-                  fontSize: 'clamp(28px, 3.8vw, 44px)',
-                  letterSpacing: '-0.02em', marginBottom: 22
-                }}>
-                  요양원을 고르기 전,<br />먼저 기준부터 확인해보세요.
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, lineHeight: 1.85, marginBottom: 36 }}>
-                  좋은 요양원은<br />
-                  시설 사진보다 운영 기준에서 차이가 납니다.<br /><br />
-                  부모님을 맡기기 전 반드시 확인해야 할<br />
-                  요양원 선택 기준을 대표가 직접 정리했습니다.
-                </p>
-                <a
-                  href="vip요양원.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 9,
-                    color: '#fff', border: '1px solid rgba(255,255,255,0.55)',
-                    padding: '13px 26px', borderRadius: 4,
-                    fontSize: 15, fontWeight: 600,
-                    transition: 'background 0.2s, border-color 0.2s',
-                    textDecoration: 'none',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.85)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.55)'; }}
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                    <path d="M12 5v14M5 12l7 7 7-7"/>
-                  </svg>
-                  요양원 선택 기준 보기
-                </a>
-              </div>
-
-              {/* 전자책 이미지 */}
-              <div style={{ flexShrink: 0 }}>
-                <img
-                  src="전자책사진.png"
-                  alt="우리 부모님, 어디서 지내셔야 할까요?"
-                  style={{ height: 280, display: 'block', filter: 'drop-shadow(0 16px 40px rgba(0,0,0,0.25))' }}
+                  style={{ height: mob ? 200 : 340, display: 'block', filter: 'drop-shadow(0 20px 56px rgba(0,0,0,0.32))' }}
                 />
               </div>
             </div>
@@ -1717,12 +1682,13 @@
 
     /* ══ SEC 10 — VIP 소개 ══ */
     function AboutSection() {
+      const mob = useMobile();
 
       // ── 시설소개 6장 ──
       const intro = [
         { src: '시설사진/e9b08e34045d6.jpg', title: 'VIP 요양원', desc: '어르신들의 생활을 위한 공간입니다.' },
-        { src: '시설사진/d017bf6f9614a.jpg', title: '2~4인실', desc: '어르신들 성향에 따라 편하게 생활 가능한 쾌적하고 여유로운 공간입니다.' },
-        { src: '시설사진/33fdb9bd4cd1c.jpg', title: '프로그램실', desc: '어르신들을 위해 여러가지 활동을 하는 프로그램실입니다.' },
+        { src: '시설사진/d017bf6f9614a.jpg', title: '1~2인실', desc: '어르신들 성향에 따라 편하게 생활 가능한 쾌적하고 여유로운 공간입니다.' },
+        { src: '시설사진/b1a52a0ca27a2.jpg', title: '프로그램실', desc: '어르신들을 위해 여러가지 활동을 하는 프로그램실입니다.' },
         { src: '시설사진/83e9176c955b3.jpg', title: '화장실', desc: '어르신들께서 큰 불편함없이 사용가능하시도록 하였습니다.' },
         { src: '시설사진/395bfd09a830b.jpg', title: '복도 및 생활실', desc: '넓은 공간을 통해 어르신들께서 이동 시 불편함이 없도록 하였습니다.' },
         { src: '시설사진/58834f52990eb.jpg', title: '휴식 공간', desc: '어르신들께서 답답하실까봐 마련한 넓은 휴식 공간입니다.' },
@@ -1731,16 +1697,15 @@
       // ── 시설모음 ──
       const gallery = [
         { src: '시설사진/e9b08e34045d6.jpg', label: '입구' },
-        { src: '시설사진/084c659323886.jpg', label: '생활홀' },
+        { src: '시설사진/복도.jpg', label: '복도' },
         { src: '시설사진/58834f52990eb.jpg', label: '휴게실' },
         { src: '시설사진/33fdb9bd4cd1c.jpg', label: '프로그램실' },
-        { src: '시설사진/d017bf6f9614a.jpg', label: '2인실' },
+        { src: '시설사진/d017bf6f9614a.jpg', label: '1~2인실' },
         { src: '시설사진/17168a829b0dc.jpg', label: '1인실' },
         { src: '시설사진/b1a52a0ca27a2.jpg', label: '1인실(2)' },
         { src: '시설사진/395bfd09a830b.jpg', label: '복도' },
         { src: '시설사진/83e9176c955b3.jpg', label: '화장실' },
-        { src: '시설사진/7c217baad1ff0.jpg', label: '화장실(2)' },
-        { src: '시설사진/92641fb47b7a1.jpg', label: '욕실' },
+        { src: '시설사진/92641fb47b7a1.jpg', label: '세탁실' },
       ];
 
       return (
@@ -1763,7 +1728,7 @@
             <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1A1A1A', marginBottom: 20 }}>시설소개</h3>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: mob ? '1fr' : 'repeat(2, 1fr)',
               gap: 16,
               marginBottom: 64,
             }}>
@@ -1787,7 +1752,7 @@
             <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1A1A1A', marginBottom: 20 }}>시설모음</h3>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: mob ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
               gap: 10,
               marginBottom: 56,
             }}>
@@ -1811,7 +1776,7 @@
                 경기도 의정부시 효자로 14, 701호 (민락동, 이프라자)<br />
                 전화 : <a href="tel:010-6880-5001" style={{ color: '#b68c6d', fontWeight: 700 }}>010-6880-5001</a>
               </div>
-              <a href="https://map.naver.com/v5/search/경기도%20의정부시%20효자로%2014%20이프라자" target="_blank" rel="noreferrer">
+              <a href="https://naver.me/GeUOsxBi" target="_blank" rel="noreferrer">
                 <button className="btn-naver">🗺️ 네이버 지도로 보기</button>
               </a>
             </div>
@@ -1845,119 +1810,133 @@
             {/* 섹션 라벨 */}
             <div style={{ marginBottom: 52 }}>
               <span className="sec-label">대표의 이야기</span>
-              <h2 className="sec-h2">제 나이는 어릴 수 있습니다.<br />하지만 이 일을 봐온 시간은<br />짧지 않습니다.</h2>
+              <h2 className="sec-h2">제 나이는 어릴 수 있습니다.<br />하지만 경험은 절대 어리지 않습니다.</h2>
             </div>
 
-            {/* ── 검정 박스 하나에 전부 ── */}
+            {/* ── 검정 박스 — 2컬럼 ── */}
             <div style={{
               background: '#1A1510',
               borderRadius: 8,
-              padding: 'clamp(32px, 5vw, 52px) clamp(28px, 5vw, 56px)',
+              padding: 'clamp(36px, 5vw, 56px)',
             }}>
+              <div style={{ display: 'flex', gap: 'clamp(32px, 5vw, 64px)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
-              {/* 프로필: 사진(좌) + 이름·이력(우) */}
-              <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: 44 }}>
-
-                {/* 사진 */}
-                <div style={{ flexShrink: 0, width: 'clamp(130px, 18vw, 200px)' }}>
+                {/* ── 왼쪽: 사진 + 프로필 ── */}
+                <div style={{ width: 'clamp(200px, 26vw, 260px)', flexShrink: 0 }}>
                   <img
                     src="대표사진.jpg"
                     alt="VIP 요양원 대표 최광진"
-                    style={{ width: '100%', display: 'block', borderRadius: 6, aspectRatio: '3/4', objectFit: 'cover' }}
+                    style={{ width: '100%', display: 'block', borderRadius: 8, aspectRatio: '3/4', objectFit: 'cover' }}
                   />
-                </div>
-
-                {/* 이름 + 이력 */}
-                <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ fontSize: 'clamp(20px, 2.8vw, 26px)', fontWeight: 900, color: '#fff', letterSpacing: '-0.01em', marginBottom: 4 }}>최광진</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#b68c6d', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 16 }}>VIP 요양원 대표</div>
-                  <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, marginBottom: 28 }}>
-                    요양원을 운영하는 대표가<br />
-                    직접 상담하고 직접 기준을 만듭니다.
-                  </p>
-
-                  <p style={{ fontSize: 10, fontWeight: 700, color: '#b68c6d', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>대표 이력</p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {career.map((c, i) => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <span style={{
-                          fontSize: 10, fontWeight: 800, flexShrink: 0,
-                          color: c.label === '현' ? '#b68c6d' : 'rgba(255,255,255,0.22)',
-                          background: c.label === '현' ? 'rgba(182,140,109,0.15)' : 'rgba(255,255,255,0.05)',
-                          padding: '2px 7px', borderRadius: 3, letterSpacing: '0.06em',
-                        }}>{c.label}</span>
-                        <span style={{ fontSize: 15, lineHeight: 1.5, color: c.label === '현' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.32)' }}>{c.t}</span>
-                      </div>
-                    ))}
+                  <div style={{ marginTop: 24 }}>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: '-0.01em', marginBottom: 4 }}>최광진</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#b68c6d', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 14 }}>VIP 요양원 대표</div>
+                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)', lineHeight: 1.8, marginBottom: 24 }}>
+                      요양원을 운영하는 대표가<br />직접 상담하고 직접 기준을 만듭니다.
+                    </p>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: '#b68c6d', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>대표 이력</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {career.map((c, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{
+                            fontSize: 10, fontWeight: 800, flexShrink: 0,
+                            color: c.label === '현' ? '#b68c6d' : 'rgba(255,255,255,0.22)',
+                            background: c.label === '현' ? 'rgba(182,140,109,0.15)' : 'rgba(255,255,255,0.05)',
+                            padding: '2px 7px', borderRadius: 3, letterSpacing: '0.06em',
+                          }}>{c.label}</span>
+                          <span style={{ fontSize: 14, lineHeight: 1.5, color: c.label === '현' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.28)' }}>{c.t}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* ── 오른쪽: 서사 텍스트 ── */}
+                <div style={{ flex: 1, minWidth: 260, borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: 'clamp(24px, 4vw, 52px)' }}>
+                  <p style={pStyle}>
+                    저희 어머니께서는<br />
+                    20년째 요양원을 운영하고 계십니다.
+                  </p>
+                  <p style={pStyle}>
+                    저는 그런 어머니를 보며<br />
+                    어린 시절을 보냈습니다.
+                  </p>
+                  <p style={pStyle}>
+                    그때는 요양원이 무엇인지<br />
+                    정확히 알지 못했습니다.
+                  </p>
+                  <p style={pStyle}>
+                    하지만 한 가지는 알 수 있었습니다.
+                  </p>
+                  <p style={{ ...pStyle, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>
+                    어머니께서 많은 어르신들을<br />
+                    소중하게 보살피는 일을 하고 계신다는 것.
+                  </p>
+
+                  <div style={{ margin: '28px 0', height: 1, background: 'rgba(255,255,255,0.06)' }} />
+
+                  <p style={pStyle}>
+                    그리고 이제,<br />
+                    제가 그 일을 하고 있습니다.
+                  </p>
+                  <p style={pStyle}>
+                    2022년,<br />
+                    제 이름으로 VIP 요양원을 시작했고,
+                  </p>
+                  <p style={pStyle}>
+                    2024년,<br />
+                    또 하나의 요양원을 준비하며<br />
+                    더 많은 어르신과 보호자를 만나고 있습니다.
+                  </p>
+
+                  <div style={{ margin: '28px 0', height: 1, background: 'rgba(255,255,255,0.06)' }} />
+
+                  <p style={pStyle}>
+                    누군가는 말합니다.
+                  </p>
+                  <p style={quoteStyle}>
+                    "너무 젊은 원장이라 걱정된다"고.
+                  </p>
+                  <p style={pStyle}>
+                    하지만 저는 이렇게 말씀드립니다.
+                  </p>
+
+                  {/* 마무리 강조 */}
+                  <div style={{ marginTop: 8, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                    <p style={{ fontSize: 'clamp(17px, 2.2vw, 22px)', fontWeight: 800, color: '#fff', lineHeight: 1.65, marginBottom: 12 }}>
+                      제 나이는 어릴 수 있습니다.<br />
+                      <span style={{ color: '#b68c6d' }}>하지만 경험은 절대 어리지 않습니다.</span>
+                    </p>
+                    <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.38)', lineHeight: 2 }}>
+                      어린 시절부터 어머니의 일을 보고,<br />
+                      어르신들과 함께 지내며 배운 시간은<br />
+                      쉽게 만들어질 수 없는 경험이기 때문입니다.
+                    </p>
+                  </div>
+                </div>
+
               </div>
+            </div>
 
-              {/* 구분선 */}
-              <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', marginBottom: 44 }} />
-
-              {/* 서사 본문 */}
-              <p style={pStyle}>
-                저희 어머니께서는<br />
-                20년째 요양원을 운영하고 계십니다.
-              </p>
-              <p style={pStyle}>
-                저는 그런 어머니를 보며<br />
-                어린 시절을 보냈습니다.
-              </p>
-              <p style={pStyle}>
-                그때는 요양원이 무엇인지<br />
-                정확히 알지 못했습니다.
-              </p>
-              <p style={pStyle}>
-                하지만 한 가지는 알 수 있었습니다.
-              </p>
-              <p style={{ ...pStyle, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>
-                어머니께서 많은 어르신들을<br />
-                소중하게 보살피는 일을 하고 계신다는 것.
-              </p>
-
-              <div style={{ margin: '32px 0', height: 1, background: 'rgba(255,255,255,0.06)' }} />
-
-              <p style={pStyle}>
-                그리고 이제,<br />
-                제가 그 일을 하고 있습니다.
-              </p>
-              <p style={pStyle}>
-                2022년,<br />
-                제 이름으로 VIP 요양원을 시작했고,
-              </p>
-              <p style={pStyle}>
-                2024년,<br />
-                또 하나의 요양원을 준비하며<br />
-                더 많은 어르신과 보호자를 만나고 있습니다.
-              </p>
-
-              <div style={{ margin: '32px 0', height: 1, background: 'rgba(255,255,255,0.06)' }} />
-
-              <p style={pStyle}>
-                누군가는 말합니다.
-              </p>
-              <p style={quoteStyle}>
-                "너무 젊은 원장이라 걱정된다"고.
-              </p>
-              <p style={pStyle}>
-                하지만 저는 이렇게 말씀드립니다.
-              </p>
-
-              {/* 마무리 강조 */}
-              <div style={{ marginTop: 8, paddingTop: 28, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                <p style={{ fontSize: 'clamp(17px, 2.5vw, 22px)', fontWeight: 800, color: '#fff', lineHeight: 1.65, marginBottom: 14 }}>
-                  제 나이는 어릴 수 있습니다.<br />
-                  <span style={{ color: '#b68c6d' }}>하지만 경험은 절대 어리지 않습니다.</span>
-                </p>
-                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.38)', lineHeight: 2 }}>
-                  어린 시절부터 어머니의 일을 보고,<br />
-                  어르신들과 함께 지내며 배운 시간은<br />
-                  쉽게 만들어질 수 없는 경험이기 때문입니다.
-                </p>
-              </div>
-
+            {/* 블로그 더 보기 버튼 */}
+            <div style={{ textAlign: 'center', marginTop: 40 }}>
+              <a
+                href="https://blog.naver.com/vip2606/223712876930"
+                target="_blank" rel="noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: '#1A1510', color: '#b68c6d',
+                  border: '1px solid rgba(182,140,109,0.4)',
+                  padding: '14px 32px', borderRadius: 4,
+                  fontSize: 16, fontWeight: 700, textDecoration: 'none',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#b68c6d'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = '#b68c6d'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#1A1510'; e.currentTarget.style.color = '#b68c6d'; e.currentTarget.style.borderColor = 'rgba(182,140,109,0.4)'; }}
+              >
+                블로그에서 대표 이야기 더 보기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
             </div>
 
           </div>
@@ -1969,16 +1948,22 @@
     function BlogSection() {
       const posts = [
         {
-          title: '우리 부모님, 어떤 요양원을 선택해야 할까요?',
-          desc: '요양원을 처음 알아보는 보호자가 반드시 확인해야 할 기준을 정리했습니다.',
+          title: '"결정은 했는데.. 왜 마음이 더 불편해질까요?"',
+          desc: '요양원에 부모님을 모시기로 결정한 뒤에도 마음이 무거운 이유, 그 감정이 자연스러운 것임을 대표가 직접 이야기합니다.',
+          img: '활동사진/4.jpg',
+          href: 'https://blog.naver.com/vip2606/224262622602',
         },
         {
-          title: '시설 사진보다 중요한 요양원 운영 기준',
-          desc: '좋은 시설만으로는 충분하지 않습니다. 어르신의 하루가 어떻게 관리되는지 확인해야 합니다.',
+          title: "의정부 요양원, '장기요양등급평가 A등급'",
+          desc: 'VIP 요양원이 장기요양등급평가에서 A등급을 받은 배경과 평가 기준, 그 결과가 의미하는 것을 정리했습니다.',
+          img: '활동사진/8.jpg',
+          href: 'https://blog.naver.com/vip2606/224206870105',
         },
         {
-          title: '보호자 소통이 중요한 이유',
-          desc: '부모님을 맡긴 뒤 가장 힘든 순간은 아무것도 알 수 없을 때입니다.',
+          title: '"6년간 제가 반드시 지켜온 2가지 원칙"',
+          desc: '요양원을 운영하면서 단 한 번도 타협하지 않은 두 가지 운영 원칙을 대표가 직접 이야기합니다.',
+          img: '활동사진/28.jpg',
+          href: 'https://blog.naver.com/vip2606/223897091128',
         },
       ];
       return (
@@ -1998,48 +1983,187 @@
             {/* 카드 3개 */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 44 }}>
               {posts.map((p, i) => (
-                <div key={i} style={{
-                  background: '#fff', border: '1px solid #E8E2DA',
-                  borderRadius: 6, overflow: 'hidden',
-                  display: 'flex', flexDirection: 'column',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                }}
+                <a
+                  key={i}
+                  href={p.href}
+                  target="_blank" rel="noreferrer"
+                  style={{
+                    background: '#fff', border: '1px solid #E8E2DA',
+                    borderRadius: 6, overflow: 'hidden',
+                    display: 'flex', flexDirection: 'column',
+                    textDecoration: 'none', color: 'inherit',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                  }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 32px rgba(0,0,0,0.08)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                 >
-                  {/* 썸네일 플레이스홀더 */}
-                  <div style={{
-                    height: 160, background: '#F5F0EB',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    borderBottom: '1px solid #E8E2DA',
-                  }}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C4AFA2" strokeWidth="1.5" strokeLinecap="round">
-                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
-                    </svg>
+                  {/* 썸네일 */}
+                  <div style={{ height: 180, overflow: 'hidden' }}>
+                    <img src={p.img} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                    />
                   </div>
                   {/* 텍스트 */}
                   <div style={{ padding: '24px 24px 28px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1A1A1A', lineHeight: 1.5, marginBottom: 12 }}>{p.title}</h3>
-                    <p style={{ fontSize: 15, color: '#5C5754', lineHeight: 1.85, flex: 1, marginBottom: 20 }}>{p.desc}</p>
-                    <button style={{
+                    <h3 style={{ fontSize: 17, fontWeight: 800, color: '#1A1A1A', lineHeight: 1.55, marginBottom: 12 }}>{p.title}</h3>
+                    <p style={{ fontSize: 14, color: '#5C5754', lineHeight: 1.85, flex: 1, marginBottom: 20 }}>{p.desc}</p>
+                    <span style={{
                       alignSelf: 'flex-start',
-                      background: 'transparent', border: '1px solid #b68c6d',
-                      color: '#b68c6d', padding: '9px 20px',
-                      borderRadius: 4, fontSize: 14, fontWeight: 700,
-                      cursor: 'pointer', transition: 'all 0.2s',
-                    }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#b68c6d'; e.currentTarget.style.color = '#fff'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#b68c6d'; }}
-                    >글 읽어보기</button>
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      fontSize: 14, fontWeight: 700, color: '#b68c6d',
+                    }}>
+                      글 읽어보기
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
 
             {/* 하단 CTA */}
             <div style={{ textAlign: 'center' }}>
-              <button className="btn-gold">대표 글 더 보기</button>
+              <a
+                href="https://blog.naver.com/vip2606"
+                target="_blank" rel="noreferrer"
+                className="btn-gold"
+                style={{ textDecoration: 'none' }}
+              >
+                대표 글 더 보기
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
             </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ══ 고객 이야기 ══ */
+    function StoriesSection() {
+      const mob = useMobile();
+      const stories = [
+        {
+          title: '장기요양등급 2등급 혜택, "요양원을 처음 알아보시는 보호자분께"',
+          date: '2026.4.6',
+          img: '활동사진/84.jpg',
+          href: 'https://blog.naver.com/vip2606/224242751285',
+        },
+        {
+          title: "'포천요양원' 믿고 맡겨도 될까요?",
+          date: '2026.1.27',
+          img: '활동사진/77.jpg',
+          href: 'https://blog.naver.com/vip2606/224160950963',
+        },
+        {
+          title: '요양원 상담은 정보가 아니라 감정으로 결정된다.',
+          date: '2025.11.24',
+          img: '활동사진/28.jpg',
+          href: 'https://blog.naver.com/vip2606/224086620736',
+        },
+        {
+          title: "'치매 요양원' 모신 후 죄책감에 힘든 보호자님들께...",
+          date: '2025.11.21',
+          img: '활동사진/8.jpg',
+          href: 'https://blog.naver.com/vip2606/224083586594',
+        },
+        {
+          title: '"자리가 없어도 기다린다던 보호자님...그 믿음, 어떻게 쌓였을까?"',
+          date: '2025.11.14',
+          img: '카톡내용/SE-c5ddea60-3cad-46f5-8436-f23cbf83baae.jpg',
+          href: 'https://blog.naver.com/vip2606/224076026325',
+        },
+        {
+          title: '"진심을 다한다는 말, 솔직히 가끔 무섭다."',
+          date: '2025.10.10',
+          img: '카톡내용/SE-3ca333df-da24-4fce-99f2-f42558ece75d.jpg',
+          href: 'https://blog.naver.com/vip2606/224036347644',
+        },
+        {
+          title: '노원구요양원, "무조건 여기 입소하고 싶어요."',
+          date: '2025.7.15',
+          img: '카톡내용/SE-fd1c92ea-e1c1-4e45-ad98-a0ded4dcf1a1.jpg',
+          href: 'https://blog.naver.com/vip2606/223933933827',
+        },
+        {
+          title: '"요양원 입소를 강하게 거부하셨던 어르신, 한 달 뒤 이렇게 말씀하셨..."',
+          date: '2025.6.16',
+          img: '활동사진/4.jpg',
+          href: 'https://blog.naver.com/vip2606/223901076558',
+        },
+      ];
+
+      return (
+        <section className="section section--warm" id="stories">
+          <div className="wrap">
+
+            {/* 헤더 */}
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 44 }}>
+              <div>
+                <span className="sec-label">고객 이야기</span>
+                <h2 className="sec-h2" style={{ marginBottom: 0 }}>보호자분들이 직접<br />전해주신 이야기입니다.</h2>
+              </div>
+              <a
+                href="https://blog.naver.com/vip2606"
+                target="_blank" rel="noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  fontSize: 14, fontWeight: 700, color: '#b68c6d',
+                  textDecoration: 'none', whiteSpace: 'nowrap',
+                  paddingBottom: 4,
+                }}
+              >
+                목록 열기
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+
+            {/* 4열 그리드 */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: mob ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+              gap: mob ? 14 : 20,
+            }}>
+              {stories.map((s, i) => (
+                <a
+                  key={i}
+                  href={s.href}
+                  target="_blank" rel="noreferrer"
+                  style={{
+                    display: 'flex', flexDirection: 'column',
+                    background: '#fff', borderRadius: 6, overflow: 'hidden',
+                    border: '1px solid #E8E2DA',
+                    textDecoration: 'none', color: 'inherit',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.09)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  {/* 썸네일 */}
+                  <div style={{ height: mob ? 120 : 160, overflow: 'hidden', flexShrink: 0 }}>
+                    <img
+                      src={s.img} alt={s.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                    />
+                  </div>
+                  {/* 텍스트 */}
+                  <div style={{ padding: mob ? '14px 14px 16px' : '18px 18px 22px', flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <p style={{
+                      fontSize: mob ? 13 : 14, fontWeight: 700,
+                      color: '#1A1A1A', lineHeight: 1.6,
+                      flex: 1,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}>{s.title}</p>
+                    <span style={{ fontSize: 12, color: '#9E9189', fontWeight: 500 }}>{s.date}</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+
           </div>
         </section>
       );
@@ -2089,8 +2213,8 @@
     /* ══ FOOTER ══ */
     function Footer() {
       const links = [
-        { l: 'VIP 소개', id: 'about' },
-        { l: '입소 안내', id: 'admission' },
+        { l: '요양원 소개', id: 'about' },
+        { l: '시설 안내', id: 'admission' },
         { l: '돌봄 시스템', id: 'care' },
         { l: '보호자 소식', id: 'comm' },
         { l: '상담 문의', id: 'consult' },
@@ -2169,6 +2293,7 @@
             <EvidenceSection />
             <DirectorSection />
             <BlogSection />
+            <StoriesSection />
             <AboutSection />
             <ConsultSection />
           </main>
