@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    { "source": "/27", "destination": "/", "permanent": true },
+    { "source": "/28", "destination": "/", "permanent": true },
+    { "source": "/29", "destination": "/", "permanent": true },
+    { "source": "/30", "destination": "/", "permanent": true },
+    { "source": "/31", "destination": "/", "permanent": true },
+    { "source": "/32", "destination": "/", "permanent": true },
+    { "source": "/33", "destination": "/", "permanent": true },
+    { "source": "/34", "destination": "/", "permanent": true },
+    { "source": "/35", "destination": "/", "permanent": true },
+    { "source": "/36", "destination": "/", "permanent": true },
+    { "source": "/37", "destination": "/", "permanent": true },
+    { "source": "/39", "destination": "/", "permanent": true },
+    { "source": "/40", "destination": "/", "permanent": true },
+    { "source": "/42", "destination": "/", "permanent": true },
+    { "source": "/43", "destination": "/", "permanent": true },
+    { "source": "/44", "destination": "/", "permanent": true }
+  ]
+}
