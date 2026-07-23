@@ -302,9 +302,10 @@
     .prog-caption strong { display: block; font-size: 16px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
 
     .video-row {
-      display: grid; grid-template-columns: repeat(2, 1fr);
+      display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 16px; margin-top: 16px;
     }
+    @media (max-width: 900px) { .video-row { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px) { .video-row { grid-template-columns: 1fr; } }
     .video-card { border-radius: 4px; overflow: hidden; background: #1A1510; }
     .video-thumb {
@@ -1045,6 +1046,11 @@
           id: 'wOpNCWjL1og',
           title: '어르신 활동 영상 2',
           cap: '신체 활동을 통해 하루의 리듬과 움직임을 확인합니다.',
+        },
+        {
+          id: 'o-ByTGh9nag',
+          title: '어르신 활동 영상 3',
+          cap: '요양원과 요양병원 차이, 부모님은 어디로 가야 할까요?',
         },
       ];
       return (
