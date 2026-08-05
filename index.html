@@ -302,10 +302,9 @@
     .prog-caption strong { display: block; font-size: 16px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
 
     .video-row {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: repeat(2, 1fr);
       gap: 16px; margin-top: 16px;
     }
-    @media (max-width: 900px) { .video-row { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px) { .video-row { grid-template-columns: 1fr; } }
     .video-card { border-radius: 4px; overflow: hidden; background: #1A1510; }
     .video-thumb {
@@ -1047,11 +1046,6 @@
           title: '어르신 활동 영상 2',
           cap: '신체 활동을 통해 하루의 리듬과 움직임을 확인합니다.',
         },
-        {
-          id: 'o-ByTGh9nag',
-          title: '어르신 활동 영상 3',
-          cap: '요양원과 요양병원 차이, 부모님은 어디로 가야 할까요?',
-        },
       ];
       return (
         <section className="section section--warm">
@@ -1086,6 +1080,59 @@
 
             {/* YouTube 영상 */}
             <div className="video-row">
+              {videos.map((v, i) => (
+                <div key={i} className="video-card">
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '4px 4px 0 0' }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${v.id}`}
+                      title={v.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                      style={{
+                        position: 'absolute', top: 0, left: 0,
+                        width: '100%', height: '100%', border: 'none',
+                      }}
+                    />
+                  </div>
+                  <div className="video-cap">{v.cap}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ══ SEC 4-1 — 요양원 정보 영상 ══ */
+    function InfoVideoSection() {
+      const videos = [
+        {
+          id: 'o-ByTGh9nag',
+          title: '요양원 정보 영상 1',
+          cap: '요양원과 요양병원 차이, 부모님은 어디로 가야 할까요?',
+        },
+        {
+          id: 'EyTVwFz1fJ4',
+          title: '요양원 정보 영상 2',
+          cap: '장기요양등급이 있어도 요양원 입소 전 시설급여 확인이 필요합니다.',
+        },
+      ];
+      return (
+        <section className="section">
+          <div className="wrap">
+            <div style={{ maxWidth: 600 }}>
+              <span className="sec-label">요양원 정보 영상</span>
+              <h2 className="sec-h2">요양원을 고르기 전,<br />꼭 확인해야 할 정보들</h2>
+              <div className="divider" />
+              <p className="sec-body">
+                장기요양등급, 시설급여, 입소 절차처럼<br />
+                <strong>미리 알아두면 도움이 되는 정보</strong>를<br /><br />
+                대표가 직접 영상으로 정리해 드립니다.
+              </p>
+            </div>
+
+            <div className="video-row" style={{ marginTop: 48 }}>
               {videos.map((v, i) => (
                 <div key={i} className="video-card">
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '4px 4px 0 0' }}>
@@ -2318,6 +2365,7 @@
             <CommSection />
             <ManualSection />
             <ProgramSection />
+            <InfoVideoSection />
             <EvidenceSection />
             <DirectorSection />
             <BlogSection />
