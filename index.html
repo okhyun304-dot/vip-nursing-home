@@ -305,7 +305,10 @@
       display: grid; grid-template-columns: repeat(2, 1fr);
       gap: 16px; margin-top: 16px;
     }
-    @media (max-width: 640px) { .video-row { grid-template-columns: 1fr; } }
+    /* 영상이 홀수(3개)일 때 한 줄로 채우는 변형 — 4개가 되면 이 클래스만 빼면 2열로 복귀 */
+    .video-row--3 { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 900px) { .video-row--3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .video-row, .video-row--3 { grid-template-columns: 1fr; } }
     .video-card { border-radius: 4px; overflow: hidden; background: #1A1510; }
     .video-thumb {
       height: 180px; display: flex; flex-direction: column;
@@ -1117,6 +1120,11 @@
           title: '요양원 정보 영상 2',
           cap: '장기요양등급이 있어도 요양원 입소 전 시설급여 확인이 필요합니다.',
         },
+        {
+          id: 'AByhFysgVao',
+          title: '요양원 정보 영상 3',
+          cap: '부모님, 언제 요양원에 모셔야 할까요? 입소를 고민해야 할 세 가지 기준.',
+        },
       ];
       return (
         <section className="section">
@@ -1132,7 +1140,7 @@
               </p>
             </div>
 
-            <div className="video-row" style={{ marginTop: 48 }}>
+            <div className="video-row video-row--3" style={{ marginTop: 48 }}>
               {videos.map((v, i) => (
                 <div key={i} className="video-card">
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '4px 4px 0 0' }}>
